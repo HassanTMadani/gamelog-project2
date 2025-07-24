@@ -1,0 +1,39 @@
+<%- include('./partials/header') %>
+
+<div class="page-header">
+    <h1>Search for Games</h1>
+    <p>Find games from the RAWG.io database to add to your library and review.</p>
+</div>
+
+<form action="/search" method="POST" class="search-form">
+    <input type="text" name="query" placeholder="e.g., Cyberpunk 2077" value="<%= query %>" required>
+    <button type="submit" class="btn">Search</button>
+</form>
+
+<% if (error) { %>
+    <p class="error-message"><%= error %></p>
+<% } %>
+
+<div class="results-grid">
+    <% games.forEach(game => { %>
+        <div class="card">
+            <img src="<%= game.background_image || '/images/placeholder.jpg' %>" alt="<%= game.name %> poster">
+            <div class="card-body">
+                <h3 class="card-title"><%= game.name %></h3>
+                <p>Released: <%= game.released || 'N/A' %></p>
+                <p>RAWG Rating: <%= game.rating || 'N/A' %> / 5</p>
+
+                <form action="/library/add" method="POST">
+                    <input type="hidden" name="rawg_id" value="<%= game.id %>">
+                    <input type="hidden" name="name" value="<%= game.name %>">
+                    <input type="hidden" name="released" value="<%= game.released %>">
+                    <input type="hidden" name="background_image" value="<%= game.background_image %>">
+                    <input type="hidden" name="rating" value="<%= game.rating %>">
+                    <button type="submit" class="btn btn-primary">Review this Game</button>
+                </form>
+            </div>
+        </div>
+    <% }) %>
+</div>
+
+<%- include('./partials/footer') %>

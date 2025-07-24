@@ -1,0 +1,25 @@
+<%- include('./partials/header') %>
+
+<div class="hero-section">
+    <h1>Welcome to GameLog, <%= session.user.username %>!</h1>
+    <p>Your personal space to discover, rate, and review video games.</p>
+    <a href="/search" class="btn btn-primary">Find Your Next Game</a>
+    <a href="/library" class="btn">View Your Library</a>
+</div>
+
+<div class="features-section">
+    <div class="feature">
+        <h3>Discover</h3>
+        <p>Search a massive database of games to find new titles to play.</p>
+    </div>
+    <div class="feature">
+        <h3>Review</h3>
+        <p>Give games a rating and write your own reviews to keep track of your thoughts.</p>
+    </div>
+    <div class="feature">
+        <h3>Organize</h3>
+        <p>Keep all your reviewed games in one place in your personal library.</p>
+    </div>
+</div>
+
+<%- include('./partials/footer') %>

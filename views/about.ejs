@@ -1,0 +1,29 @@
+<%- include('./partials/header') %>
+
+<div class="page-header">
+    <h1>About GameLog</h1>
+</div>
+
+<div class="content-box">
+    <p><strong>GameLog</strong> is a full-stack web application designed for video game enthusiasts. It serves as a personal aggregator where users can discover, save, and review their favorite games.</p>
+    
+    <h3>Core Technologies</h3>
+    <ul>
+        <li><strong>Backend:</strong> Node.js with the Express.js framework.</li>
+        <li><strong>Database:</strong> MySQL for persistent data storage of users and reviews.</li>
+        <li><strong>Frontend:</strong> EJS (Embedded JavaScript) for dynamic server-side rendering of pages.</li>
+        <li><strong>Authentication:</strong> Session-based authentication using `express-session` with passwords securely hashed by `bcryptjs`.</li>
+    </ul>
+
+    <h3>Features</h3>
+    <p>This application was built to fulfill a university project brief, demonstrating a range of web development skills:</p>
+    <ul>
+        <li>Secure user registration and login system.</li>
+        <li>Consumption of a third-party REST API (<a href="https://rawg.io/" target="_blank">RAWG.io</a>) to fetch real-time game data.</li>
+        <li>Provision of an internal REST API to expose user library data.</li>
+        <li>Full CRUD (Create, Read, Update, Delete) functionality for game reviews.</li>
+        <li>Database-backed search functionality for a user's personal library.</li>
+    </ul>
+</div>
+
+<%- include('./partials/footer') %>

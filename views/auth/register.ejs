@@ -1,0 +1,48 @@
+<%- include('../partials/header') %>
+
+<div class="auth-container">
+    <h2>Create an Account</h2>
+
+    <%# This block finds and displays a generic error message %>
+    <% const genericError = errors.find(e => !e.path) %>
+    <% if (genericError) { %>
+        <p class="error-message"><%= genericError.msg %></p>
+    <% } %>
+
+    <form action="/register" method="POST" class="auth-form">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value="<%= oldInput.username || '' %>" required
+                   class="<%= errors.find(e => e.path === 'username') ? 'input-error' : '' %>">
+            <% const usernameError = errors.find(e => e.path === 'username') %>
+            <% if (usernameError) { %>
+                <p class="field-error"><%= usernameError.msg %></p>
+            <% } %>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<%= oldInput.email || '' %>" required
+                   class="<%= errors.find(e => e.path === 'email') ? 'input-error' : '' %>">
+            <% const emailError = errors.find(e => e.path === 'email') %>
+            <% if (emailError) { %>
+                <p class="field-error"><%= emailError.msg %></p>
+            <% } %>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required
+                   class="<%= errors.find(e => e.path === 'password') ? 'input-error' : '' %>">
+            <% const passwordError = errors.find(e => e.path === 'password') %>
+            <% if (passwordError) { %>
+                <p class="field-error"><%= passwordError.msg %></p>
+            <% } %>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p class="auth-switch">Already have an account? <a href="/login">Login here</a></p>
+</div>
+
+<%- include('../partials/footer') %>
