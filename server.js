@@ -8,7 +8,9 @@ const flash = require('connect-flash');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const BASE_PATH = process.env.BASE_PATH || '/';
+
+// ✅ Cleanly define the base path for URL prefixing
+const BASE_PATH = process.env.BASE_PATH ? ('/' + process.env.BASE_PATH.replace(/^\/|\/$/g, '')) : '';
 
 // Middleware
 app.use(express.json()); // To parse JSON bodies
@@ -16,7 +18,9 @@ app.use(express.urlencoded({ extended: true })); // To parse URL-encoded bodies
 
 // EJS Setup
 app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
+
+// ✅ Correctly serve static files from the public directory, without the base path prefix
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Session Management
 app.use(session({
@@ -30,41 +34,43 @@ app.use(flash());
 // Custom middleware to make session, base path, and a URL helper available to all templates
 app.use((req, res, next) => {
     res.locals.session = req.session;
-
-    // --- CRITICAL: URL and Path Management ---
     res.locals.BASE_PATH = BASE_PATH;
-    // Helper function to build correct URLs
-    res.locals.url = (route) => {
-        // Use path.join to handle slashes correctly and prevent double slashes
-        return path.join(BASE_PATH, route);
-    };
-    // --- END CRITICAL SECTION ---
 
-    // This ensures they are always defined as arrays, even if empty.
+    // ✅ A robust helper function for creating correct URLs
+    res.locals.url = (route) => {
+        const newRoute = route.startsWith('/') ? route : '/' + route;
+        // Combine base path and route, then replace multiple slashes with a single one
+        return (BASE_PATH + newRoute).replace(/\/+/g, '/');
+    };
+
+    // Make flash messages and form state available to all templates
     res.locals.successMessage = req.flash('success');
     res.locals.errorMessage = req.flash('error');
-    
-    // This is for validation errors, ensuring it's always an array
-    res.locals.errors = []; 
-    // This is for preserving old input, ensuring it's always an object
+    res.locals.errors = [];
     res.locals.oldInput = {};
 
     next();
 });
 
-// --- Route handlers ---
-// Use the BASE_PATH for all routes
+// --- Route Handlers ---
+// ✅ Correctly mount all routes with the BASE_PATH prefix
 app.use(BASE_PATH, require('./routes/index'));
 app.use(BASE_PATH, require('./routes/auth'));
-app.use(path.join(BASE_PATH, 'api'), require('./routes/api'));
+app.use(`${BASE_PATH}/api`, require('./routes/api'));
 
 // Global Error Handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).render('error', {
+        message: 'Something went wrong on our end.',
+        error: process.env.NODE_ENV === 'development' ? err : {}
+    });
 });
 
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+    if (BASE_PATH) {
+        console.log(`Application available under the base path: ${BASE_PATH}`);
+    }
 });
