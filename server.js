@@ -8,6 +8,7 @@ const flash = require('connect-flash');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const BASE_PATH = process.env.BASE_PATH || '/';
 
 // Middleware
 app.use(express.json()); // To parse JSON bodies
@@ -22,14 +23,23 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Set dynamically
+    cookie: { secure: false } // Set to true if using HTTPS in production
 }));
-app.use(flash()); 
-// Custom middleware to make user session available to all templates
+app.use(flash());
+
+// Custom middleware to make session, base path, and a URL helper available to all templates
 app.use((req, res, next) => {
     res.locals.session = req.session;
-    
-    // [FIX] Initialize flash message variables on every request
+
+    // --- CRITICAL: URL and Path Management ---
+    res.locals.BASE_PATH = BASE_PATH;
+    // Helper function to build correct URLs
+    res.locals.url = (route) => {
+        // Use path.join to handle slashes correctly and prevent double slashes
+        return path.join(BASE_PATH, route);
+    };
+    // --- END CRITICAL SECTION ---
+
     // This ensures they are always defined as arrays, even if empty.
     res.locals.successMessage = req.flash('success');
     res.locals.errorMessage = req.flash('error');
@@ -41,10 +51,12 @@ app.use((req, res, next) => {
 
     next();
 });
-// Route handlers
-app.use('/', require('./routes/index'));
-app.use('/', require('./routes/auth'));
-app.use('/api', require('./routes/api'));
+
+// --- Route handlers ---
+// Use the BASE_PATH for all routes
+app.use(BASE_PATH, require('./routes/index'));
+app.use(BASE_PATH, require('./routes/auth'));
+app.use(path.join(BASE_PATH, 'api'), require('./routes/api'));
 
 // Global Error Handler
 app.use((err, req, res, next) => {

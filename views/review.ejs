@@ -10,10 +10,10 @@
 
 <div class="review-container">
     <div class="review-game-art">
-        <img src="<%= game.background_image || '/images/placeholder.jpg' %>" alt="<%= game.name %> art">
+        <img src="<%= game.background_image || url('/images/placeholder.jpg') %>" alt="<%= game.name %> art">
     </div>
 
-    <form action="/review/<%= game.id %>" method="POST" class="review-form">
+    <form action="<%= url('/review/' + game.id) %>" method="POST" class="review-form">
         <% if (errors && errors.length > 0) { %>
             <div class="error-message">
                 <ul>
@@ -40,7 +40,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Save Review</button>
-        <a href="/library" class="btn btn-secondary">Cancel</a>
+        <a href="<%= url('/library') %>" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 

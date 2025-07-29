@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GameLog</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="<%= url('/css/style.css') %>">
 </head>
 <body>
     <header>
         <nav class="navbar">
-            <a href="/home" class="nav-brand">GameLog</a>
+            <a href="<%= url('/home') %>" class="nav-brand">GameLog</a>
             <ul class="nav-links">
                 <% if (session.isLoggedIn) { %>
-                    <li><a href="/search">Search Games</a></li>
-                    <li><a href="/library">My Library</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/logout">Logout (<%= session.user.username %>)</a></li>
+                    <li><a href="<%= url('/search') %>">Search Games</a></li>
+                    <li><a href="<%= url('/library') %>">My Library</a></li>
+                    <li><a href="<%= url('/about') %>">About</a></li>
+                    <li><a href="<%= url('/logout') %>">Logout (<%= session.user.username %>)</a></li>
                 <% } else { %>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/register">Register</a></li>
+                    <li><a href="<%= url('/about') %>">About</a></li>
+                    <li><a href="<%= url('/login') %>">Login</a></li>
+                    <li><a href="<%= url('/register') %>">Register</a></li>
                 <% } %>
             </ul>
         </nav>
     </header>
-    <main class="container">
-            </header>
     <main class="container">
         <%# ADD THIS BLOCK to display flash messages %>
         <% if (successMessage.length > 0) { %>

@@ -25,7 +25,7 @@ exports.register = async (req, res) => {
         }
         await User.create(username, email, password);
         req.flash('success', 'Registration successful! Please log in.');
-        res.redirect('/login');
+        res.redirect(res.locals.url('/login')); // <-- FIX HERE
     } catch (error) {
         console.error(error);
         if (error.code === 'ER_DUP_ENTRY') {
@@ -70,7 +70,7 @@ exports.login = async (req, res) => {
         req.session.save(err => {
             if (err) throw err;
              req.flash('success', 'You are now logged in.');
-            res.redirect('/home');
+            res.redirect(res.locals.url('/home')); // <-- FIX HERE
         });
     } catch (error) {
         console.error(error);
@@ -85,10 +85,10 @@ exports.logout = (req, res) => {
     req.session.destroy(err => {
         if (err) {
             console.error('Session destruction error:', err);
-            return res.redirect('/home'); // Redirect home on error
+            return res.redirect(res.locals.url('/home')); // <-- FIX HERE (for the error case)
         }
         // It's important to clear the cookie to prevent old session IDs from being sent
         res.clearCookie('connect.sid'); 
-        res.redirect('/login');
+        res.redirect(res.locals.url('/login')); // <-- FIX HERE
     });
 };

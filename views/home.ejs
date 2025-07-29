@@ -3,8 +3,8 @@
 <div class="hero-section">
     <h1>Welcome to GameLog, <%= session.user.username %>!</h1>
     <p>Your personal space to discover, rate, and review video games.</p>
-    <a href="/search" class="btn btn-primary">Find Your Next Game</a>
-    <a href="/library" class="btn">View Your Library</a>
+    <a href="<%= url('/search') %>" class="btn btn-primary">Find Your Next Game</a>
+    <a href="<%= url('/library') %>" class="btn">View Your Library</a>
 </div>
 
 <div class="features-section">

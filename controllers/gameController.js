@@ -1,7 +1,7 @@
 const axios = require('axios');
 const Game = require('../models/Game');
 require('dotenv').config();
-const { validationResult } = require('express-validator'); // [FIX] This line was previously missing
+const { validationResult } = require('express-validator');
 
 const RAWG_API_KEY = process.env.RAWG_API_KEY;
 const RAWG_API_URL = 'https://api.rawg.io/api';
@@ -9,7 +9,7 @@ const RAWG_API_URL = 'https://api.rawg.io/api';
 // Middleware to protect routes that require authentication
 exports.isAuth = (req, res, next) => {
     if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
+        return res.redirect(res.locals.url('/login')); // <-- FIX HERE
     }
     next();
 };
@@ -61,7 +61,7 @@ exports.reviewPage = async (req, res) => {
         const game = await Game.getGameDetails(gameId);
         if (!game) return res.status(404).send('Game not found.');
 
-        const existingReview = await Game.getReview(userId, gameId); // [FIX] This now works correctly
+        const existingReview = await Game.getReview(userId, gameId);
 
         res.render('review', { game, review: existingReview || {}, errors: [] });
     } catch (error) {
@@ -90,7 +90,7 @@ exports.submitReview = async (req, res) => {
     try {
         await Game.saveReview(userId, gameId, rating, review_text);
         req.flash('success', 'Review saved successfully!');
-        res.redirect('/library');
+        res.redirect(res.locals.url('/library')); // <-- FIX HERE
     } catch (error) {
         console.error('Error submitting review:', error);
         const review = { rating, review_text };
@@ -114,11 +114,11 @@ exports.addGameToLibrary = async (req, res) => {
 
         const localGameId = await Game.findOrCreate(gameDataFromApi);
         
-        res.redirect(`/review/${localGameId}`);
+        res.redirect(res.locals.url(`/review/${localGameId}`)); // <-- FIX HERE
 
     } catch (error) {
         console.error('Error adding game to library:', error);
-        res.redirect('/search');
+        res.redirect(res.locals.url('/search')); // <-- FIX HERE
     }
 };
 
@@ -128,10 +128,10 @@ exports.deleteReview = async (req, res) => {
         const userId = req.session.user.id;
         await Game.removeReview(reviewId, userId);
         req.flash('success', 'Review has been deleted.');
-        res.redirect('/library');
+        res.redirect(res.locals.url('/library')); // <-- FIX HERE
     } catch (error) {
         console.error('Error deleting review:', error);
-        res.redirect('/library');
+        res.redirect(res.locals.url('/library')); // <-- FIX HERE
     }
 };
 

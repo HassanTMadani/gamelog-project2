@@ -1,14 +1,14 @@
 exports.root = (req, res) => {
     if (req.session.isLoggedIn) {
-        res.redirect('/home');
+        res.redirect(res.locals.url('/home')); // <-- FIX HERE
     } else {
-        res.redirect('/login');
+        res.redirect(res.locals.url('/login')); // <-- FIX HERE
     }
 };
 
 exports.homePage = (req, res) => {
     if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
+        return res.redirect(res.locals.url('/login')); // <-- FIX HERE
     }
     res.render('home');
 };
